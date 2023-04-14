@@ -1,26 +1,35 @@
 package Library;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class Test {
 
     public static void main(String[] args) {
         Connection conn = JDBCUtil.getConnection();
 
-        try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM SCOTT.EMP");
+        String title = "어린민정";
+        String writer = "베리베리";
+        String publisher = "민정출판";
+        int available = 1;
 
-            while (rs.next()) {
-                System.out.println(rs.getString("EMPNO") + " ");
-            }
+        String sql = "INSERT INTO SCOTT.BOOK(ID, TITLE, WRITER, PUBLISHER, AVAILABLE) "
+                + "VALUES (LPAD(BOOK_SEQ.NEXTVAL, 8, '0'), ?, ?, ?, ?)";
 
+        try (PreparedStatement pstmt = conn.prepareStatement(sql))
+        {
+            pstmt.setString(1, title);
+            pstmt.setString(2, writer);
+            pstmt.setString(3, publisher);
+            pstmt.setInt(4, available);
+
+            int result = pstmt.executeUpdate();
+            System.out.println(result + " rows inserted.");
+            
         } catch (SQLException e) {
-            System.out.println("쿼리 실행 실패");
             e.printStackTrace();
-        } 
+        }
     }
 }
