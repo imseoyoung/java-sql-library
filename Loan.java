@@ -151,8 +151,9 @@ public class Loan {
 
                     String selectBookSql1 = "SELECT * FROM BOOK WHERE ID = ?";
                     String updateBookSql = "UPDATE BOOK SET AVAILABLE = 0 WHERE ID = ?";
-                    String insertLoanSql = "INSERT INTO LOAN (ID, MEMBERID, BOOKID, LOANDATE, DUE, AVAILABLE) "
-                            + "VALUES (LPAD(LOAN_SEQ.NEXTVAL, 8, '0'), ?, ?, sysdate, sysdate + 7, 1)";
+                    String insertLoanSql =
+                            "INSERT INTO LOAN (ID, MEMBERID, BOOKID, LOANDATE, DUE, AVAILABLE) "
+                                    + "VALUES (LPAD(LOAN_SEQ.NEXTVAL, 8, '0'), ?, ?, sysdate, sysdate + 7, 1)";
 
                     try (PreparedStatement selectPstmt = conn.prepareStatement(selectBookSql1);
                             PreparedStatement updatePstmt = conn.prepareStatement(updateBookSql);
@@ -216,47 +217,47 @@ public class Loan {
                     Date loandate = returnRs.getDate("LOANDATE");
                     Date due = returnRs.getDate("DUE");
                     int available = returnRs.getInt("AVAILABLE");
-                    String availableStr = (available == 1) ? "연장가능" : "연장불가능";     
-                    System.out.println(id + "\t " + memberid + "\t\t " + bookid + "\t " + loandate + "\t\t " 
-                            + due + "\t " + availableStr);
+                    String availableStr = (available == 1) ? "연장가능" : "연장불가능";
+                    System.out.println(id + "\t " + memberid + "\t\t " + bookid + "\t " + loandate
+                            + "\t\t " + due + "\t " + availableStr);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            
+
             System.out.println("반납 할 책의 책 번호를 입력해주세요");
-            String returnid = sc.nextLine();           
-            
+            String returnid = sc.nextLine();
+
             String selectLoanSql = "SELECT * FROM SCOTT.LOAN WHERE BOOKID = ?";
             String updateBookSql = "UPDATE SCOTT.BOOK SET AVAILABLE = 1 WHERE ID = ?";
             String deleteLoanSql = "DELETE FROM SCOTT.LOAN WHERE BOOKID = ?";
-            
+
             try (PreparedStatement selectLoanPstmt = conn.prepareStatement(selectLoanSql);
                     PreparedStatement updateBookPstmt = conn.prepareStatement(updateBookSql);
                     PreparedStatement deleteLoanPstmt = conn.prepareStatement(deleteLoanSql)) {
 
-                   // 대여 목록에서 선택한 책 정보 조회
-                   selectLoanPstmt.setString(1, returnid);
-                   ResultSet loanRs = selectLoanPstmt.executeQuery();
-                   if (loanRs.next()) {
-                       // 선택한 책이 대여 목록에 있으면 대출 정보 삭제
-                       deleteLoanPstmt.setString(1, returnid);
-                       deleteLoanPstmt.executeUpdate();
+                // 대여 목록에서 선택한 책 정보 조회
+                selectLoanPstmt.setString(1, returnid);
+                ResultSet loanRs = selectLoanPstmt.executeQuery();
+                if (loanRs.next()) {
+                    // 선택한 책이 대여 목록에 있으면 대출 정보 삭제
+                    deleteLoanPstmt.setString(1, returnid);
+                    deleteLoanPstmt.executeUpdate();
 
-                       // book table의 해당 행의 available을 1로 변경
-                       updateBookPstmt.setString(1, returnid);
-                       updateBookPstmt.executeUpdate();
-                       System.out.println("반납 완료되었습니다.");
-                       break;
-                   } else {
-                       // 선택한 책이 대출 목록에 없으면 메시지 출력
-                       System.out.println("선택하신 책이 대출 목록에 없습니다.");
-                       break;
-                   }
+                    // book table의 해당 행의 available을 1로 변경
+                    updateBookPstmt.setString(1, returnid);
+                    updateBookPstmt.executeUpdate();
+                    System.out.println("반납 완료되었습니다.");
+                    break;
+                } else {
+                    // 선택한 책이 대출 목록에 없으면 메시지 출력
+                    System.out.println("선택하신 책이 대출 목록에 없습니다.");
+                    break;
+                }
 
-               } catch (SQLException e) {
-                   e.printStackTrace();
-               }                  
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -279,34 +280,34 @@ public class Loan {
                     Date loandate = returnRs.getDate("LOANDATE");
                     Date due = returnRs.getDate("DUE");
                     int available = returnRs.getInt("AVAILABLE");
-                    String availableStr = (available == 1) ? "연장가능" : "연장불가능";     
-                    System.out.println(id + "\t " + memberid + "\t\t " + bookid + "\t " + loandate + "\t\t " 
-                            + due + "\t " + availableStr);
+                    String availableStr = (available == 1) ? "연장가능" : "연장불가능";
+                    System.out.println(id + "\t " + memberid + "\t\t " + bookid + "\t " + loandate
+                            + "\t\t " + due + "\t " + availableStr);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            
+
             System.out.println("연장 할 책의 번호를 입력해주세요");
             String extendid = sc.nextLine();
 
             String selectLoanSql = "SELECT * FROM SCOTT.LOAN WHERE BOOKID = ?";
-            String updateLoanSql = "UPDATE SCOTT.LOAN SET DUE = DUE + 7, AVAILABLE = 0 WHERE ID = ? AND AVAILABLE = 1";
-            String updateLoanSql2 = "UPDATE SCOTT.LOAN SET AVAILABLE = 0 WHERE ID = ? AND AVAILABLE";
+            String updateLoanSql =
+                    "UPDATE SCOTT.LOAN SET DUE = DUE + 7, AVAILABLE = 0 WHERE ID = ? AND AVAILABLE = 1";
+
             try (PreparedStatement selectLoanPstmt = conn.prepareStatement(selectLoanSql);
-                 PreparedStatement updateLoanPstmt = conn.prepareStatement(updateLoanSql);
-                 PreparedStatement updateLoanPstmt2 = conn.prepareStatement(updateLoanSql2)) {               
+                    PreparedStatement updateLoanPstmt = conn.prepareStatement(updateLoanSql);                    ) {
+
                 selectLoanPstmt.setString(1, extendid);
                 ResultSet loanRs = selectLoanPstmt.executeQuery();
-                
+
                 // 대출 목록이 존재하면 해당 대출 목록의 DUE 날짜를 7일 연장
                 if (loanRs.next()) {
                     String loanId = loanRs.getString("ID");
                     updateLoanPstmt.setString(1, loanId);
-                    updateLoanPstmt2.setString(1, loanId);
-                    updateLoanPstmt.executeUpdate();
-                    int updateCount = updateLoanPstmt2.executeUpdate();
-                    
+
+                    int updateCount = updateLoanPstmt.executeUpdate();
+
                     if (updateCount > 0) {
                         System.out.println("연장이 완료되었습니다.");
                         break;
@@ -320,7 +321,7 @@ public class Loan {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-            }  
+            }
         }
     }
 
@@ -343,9 +344,9 @@ public class Loan {
                     Date loandate = returnRs.getDate("LOANDATE");
                     Date due = returnRs.getDate("DUE");
                     int available = returnRs.getInt("AVAILABLE");
-                    String availableStr = (available == 1) ? "연장가능" : "연장불가능";                    
-                    System.out.println(id + "\t " + memberid + "\t\t " + bookid + "\t " + loandate + "\t\t " 
-                                        + due + "\t " + availableStr);
+                    String availableStr = (available == 1) ? "연장가능" : "연장불가능";
+                    System.out.println(id + "\t " + memberid + "\t\t " + bookid + "\t " + loandate
+                            + "\t\t " + due + "\t " + availableStr);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
