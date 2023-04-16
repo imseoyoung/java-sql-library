@@ -6,14 +6,11 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
 public class Book implements Controller {
     Connection conn = JDBCUtil.getConnection();
-
     Scanner sc = new Scanner(System.in);
 
     private String id;
@@ -140,8 +137,9 @@ public class Book implements Controller {
                     String writer = rs.getString("WRITER");
                     String publisher = rs.getString("PUBLISHER");
                     int available = rs.getInt("AVAILABLE");
+                    String availableStr = (available == 1) ? "대출가능" : "대출불가능";
                     System.out.println(id + " " + title + "\t " + writer + "\t " + publisher
-                            + "\t\t " + available);
+                            + "\t\t " + availableStr);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -292,8 +290,9 @@ public class Book implements Controller {
                     String writer = rs.getString("WRITER");
                     String publisher = rs.getString("PUBLISHER");
                     int available = rs.getInt("AVAILABLE");
+                    String availableStr = (available == 1) ? "대출가능" : "대출불가능";
                     System.out.println(id + " " + title + "\t " + writer + "\t " + publisher
-                            + "\t\t " + available);
+                            + "\t\t " + availableStr);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -323,8 +322,9 @@ public class Book implements Controller {
                     String writer = rs.getString("WRITER");
                     String publisher = rs.getString("PUBLISHER");
                     int available = rs.getInt("AVAILABLE");
+                    String availableStr = (available == 1) ? "대출가능" : "대출불가능";
                     System.out.println(id + " " + title + "\t " + writer + "\t " + publisher
-                            + "\t\t " + available);
+                            + "\t\t " + availableStr);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -347,8 +347,8 @@ public class Book implements Controller {
                 e.printStackTrace();
             }
 
-            String delete_sql = "DELETE FROM BOOK WHERE ID = ?";
-            String select_sql = "SELECT * FROM BOOK WHERE ID = ?";
+            String delete_sql = "DELETE FROM SCOTT.BOOK WHERE ID = ?";
+            String select_sql = "SELECT * FROM SCOTT.BOOK WHERE ID = ?";
             String insert_sql =
                     "INSERT INTO DELETED_BOOK (ID, TITLE, WRITER, PUBLISHER, AVAILABLE) "
                             + "VALUES (?, ?, ?, ?, ?)";
@@ -371,14 +371,14 @@ public class Book implements Controller {
                         insertPstmt.setString(3, writer);
                         insertPstmt.setString(4, publisher);
                         insertPstmt.setInt(5, available);
-                        insertPstmt.executeUpdate();
-                        System.out.println("Deleted book inserted into DELETED_BOOK table.");
+                        insertPstmt.executeUpdate();                 
                     }
                 }
 
                 // 선택한 책 정보 삭제
                 deletePstmt.setString(1, delete_id);
                 deletePstmt.executeUpdate();
+                System.out.println("책 정보가 삭제되었습니다.");
 
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -411,8 +411,9 @@ public class Book implements Controller {
                             String writer = rs.getString("WRITER");
                             String publisher = rs.getString("PUBLISHER");
                             int available = rs.getInt("AVAILABLE");
+                            String availableStr = (available == 1) ? "대출가능" : "대출불가능";
                             System.out.println(id + " " + title + "\t " + writer + "\t " + publisher
-                                    + "\t\t " + available);
+                                    + "\t\t " + availableStr);
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
