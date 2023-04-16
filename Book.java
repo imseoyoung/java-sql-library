@@ -186,8 +186,7 @@ public class Book implements Controller {
                     pstmt.setString(3, publisher);
                     pstmt.setInt(4, available);
 
-                    int result = pstmt.executeUpdate();
-                    System.out.println(result + " rows inserted.");
+                    pstmt.executeUpdate();
 
                 } catch (SQLException e) {
                     e.printStackTrace();
